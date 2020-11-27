@@ -5,13 +5,13 @@ class Measured::UnitSystemBuilder
     @cache = nil
   end
 
-  def unit(unit_name, aliases: [], value: nil)
-    @units << build_unit(unit_name, aliases: aliases, value: value)
+  def unit(unit_name, aliases: [], value: nil, base_offset: 0)
+    @units << build_unit(unit_name, aliases: aliases, value: value, base_offset: base_offset)
     nil
   end
 
-  def si_unit(unit_name, aliases: [], value: nil)
-    @units += build_si_units(unit_name, aliases: aliases, value: value)
+  def si_unit(unit_name, aliases: [], value: nil, base_offset: 0)
+    @units += build_si_units(unit_name, aliases: aliases, value: value, base_offset: base_offset)
     nil
   end
 
@@ -49,17 +49,18 @@ class Measured::UnitSystemBuilder
     ["Y", "yotta", 24],
   ].map(&:freeze).freeze
 
-  def build_si_units(name, aliases: [], value: nil)
-    si_units = [build_unit(name, aliases: aliases, value: value)]
+  def build_si_units(name, aliases: [], value: nil, base_offset: 0)
+    si_units = [build_unit(name, aliases: aliases, value: value, base_offset: base_offset)]
     SI_PREFIXES.each do |short, long, exp|
       long_names = aliases.map { |suffix| "#{long}#{suffix}" }
-      si_units << build_unit("#{short}#{name}", aliases: long_names, value: "#{10 ** exp} #{name}")
+      si_units << build_unit("#{short}#{name}", aliases: long_names, value: "#{10 ** exp} #{name}",
+                             base_offset: base_offset)
     end
     si_units
   end
 
-  def build_unit(name, aliases: [], value: nil)
-    unit = Measured::Unit.new(name, aliases: aliases, value: value)
+  def build_unit(name, aliases: [], value: nil, base_offset: 0)
+    unit = Measured::Unit.new(name, aliases: aliases, value: value, base_offset: base_offset)
     check_for_duplicate_unit_names!(unit)
     unit
   end

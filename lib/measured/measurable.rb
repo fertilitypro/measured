@@ -38,7 +38,8 @@ class Measured::Measurable < Numeric
     new_unit = unit_from_unit_or_name!(new_unit)
     return self if new_unit == unit
 
-    new_value = unit.unit_system.convert(value, from: unit, to: new_unit)
+    new_value = unit.unit_system.convert(value - unit.base_offset, from: unit, to: new_unit)
+    new_value += new_unit.base_offset
 
     self.class.new(new_value, new_unit)
   end

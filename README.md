@@ -204,6 +204,9 @@ There is support for SI units through the use of `si_unit`. Units declared throu
   * us_pt, us_pint, us_pints
   * oz, fl_oz, imp_fl_oz, imperial_fluid_ounce, imperial_fluid_ounces
   * us_oz, us_fl_oz, us_fluid_ounce, us_fluid_ounces
+* `Measured::Temperature`
+  * C, tempC, celsius
+  * F, tempF, fahrenheit
 
 You can skip these and only define your own units by doing:
 

@@ -2,9 +2,10 @@
 class Measured::Unit
   include Comparable
 
-  attr_reader :name, :names, :aliases, :conversion_amount, :conversion_unit, :unit_system, :inverse_conversion_amount
+  attr_reader :name, :names, :aliases, :conversion_amount, :conversion_unit, :unit_system, :inverse_conversion_amount,
+              :base_offset
 
-  def initialize(name, aliases: [], value: nil, unit_system: nil)
+  def initialize(name, aliases: [], value: nil, unit_system: nil, base_offset: 0)
     @name = name.to_s.freeze
     @aliases = aliases.map(&:to_s).map(&:freeze).freeze
     @names = ([@name] + @aliases).sort!.freeze
@@ -12,14 +13,16 @@ class Measured::Unit
     @inverse_conversion_amount = (1 / conversion_amount if conversion_amount)
     @conversion_string = ("#{conversion_amount} #{conversion_unit}" if conversion_amount || conversion_unit)
     @unit_system = unit_system
+    @base_offset = base_offset
   end
 
-  def with(name: nil, unit_system: nil, aliases: nil, value: nil)
+  def with(name: nil, unit_system: nil, aliases: nil, value: nil, base_offset: nil)
     self.class.new(
       name || self.name,
       aliases: aliases || self.aliases,
       value: value || @conversion_string,
-      unit_system: unit_system || self.unit_system
+      unit_system: unit_system || self.unit_system,
+      base_offset: base_offset || self.base_offset
     )
   end
 
